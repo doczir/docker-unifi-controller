@@ -11,6 +11,12 @@ LABEL maintainer="aptalca"
 ARG UNIFI_BRANCH="stable"
 ARG DEBIAN_FRONTEND="noninteractive"
 
+# install jre-openj9
+RUN curl -L https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u275-b01_openj9-0.23.0/OpenJDK8U-jre_x64_linux_openj9_8u275b01_openj9-0.23.0.tar.gz | tar -xzf - -C /tmp/ && mv /tmp/jdk8u275-b01-jre/ /opt/jre
+ENV PATH="/opt/jre/bin:${PATH}"
+ADD java8-runtime-headless_99_all.deb /tmp/
+RUN dpkg -i /tmp/java8-runtime-headless_99_all.deb
+
 RUN \
  echo "**** install packages ****" && \
  apt-get update && \
@@ -20,7 +26,6 @@ RUN \
 	libcap2 \
 	logrotate \
 	mongodb-server \
-	openjdk-8-jre-headless \
 	wget && \
  echo "**** install unifi ****" && \
  if [ -z ${UNIFI_VERSION+x} ]; then \
